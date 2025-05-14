@@ -1,13 +1,19 @@
 package com.floodguard.floodguard_server.dto;
 
 public class UsuarioDTO {
-    private Long id;
+    private Integer id;
     private String nomeUsuario;
     private String email;
-    private int idBairro;
+    private Integer idBairro;
 
     // Construtores
-    public UsuarioDTO(Long id, String nomeUsuario, String email, int idBairro) {
+    public UsuarioDTO(Integer id, String nomeUsuario, String email) {
+        this.id = id;
+        this.nomeUsuario = nomeUsuario;
+        this.email = email;
+    }
+
+    public UsuarioDTO(Integer id, String nomeUsuario, String email, Integer idBairro) {
         this.id = id;
         this.nomeUsuario = nomeUsuario;
         this.email = email;
@@ -15,8 +21,8 @@ public class UsuarioDTO {
     }
 
     // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
     public String getNomeUsuario() { return nomeUsuario; }
     public void setNomeUsuario(String nomeUsuario) { this.nomeUsuario = nomeUsuario; }
@@ -24,6 +30,6 @@ public class UsuarioDTO {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public int getIdBairro() { return idBairro; }
-    public void setIdBairro(int idBairro) { this.idBairro = idBairro; }
+    public Integer getIdBairro() { return idBairro; }
+    public void setIdBairro(Integer idBairro) { this.idBairro = idBairro; }
 }

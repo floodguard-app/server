@@ -1,8 +1,8 @@
-# 🌐 FloodGuard - Backend (Spring Boot)
+# 🌊 FloodGuard - Backend (Spring Boot API)
 
-Este repositório contém o servidor backend do projeto **FloodGuard**, um sistema de previsão de enchentes desenvolvido como projeto de extensão no curso de Análise e Desenvolvimento de Sistemas.
+Este repositório contém o servidor backend do projeto FloodGuard, um sistema de suporte à gestão de riscos de enchentes. O backend fornece uma API RESTful para gerenciar usuários, autenticação e outros dados relevantes para o sistema.
 
-O backend foi construído em **Java 21+** com **Spring Boot 3.4**, integrando funcionalidades de API REST, segurança com Spring Security e persistência de dados com Spring Data JPA.
+O servidor foi construído em **Java 21+** com **Spring Boot 3.4.5**, utilizando **Spring Security** para autenticação baseada em **JWT** e **Spring Data JPA** para persistência de dados com **MySQL**.
 
 ---
 
@@ -14,7 +14,8 @@ O backend foi construído em **Java 21+** com **Spring Boot 3.4**, integrando fu
 - Spring Data JPA
 - Spring Security
 - MySQL
-- OpenAPI (Swagger 3 via SpringDoc)
+- JSON Web Token (JWT) para autenticação
+- OpenAPI 3 (Swagger UI via SpringDoc)
 
 ---
 
@@ -22,12 +23,14 @@ O backend foi construído em **Java 21+** com **Spring Boot 3.4**, integrando fu
 
 Conforme `pom.xml`:
 
-- `spring-boot-starter-web`
-- `spring-boot-starter-data-jpa`
-- `spring-boot-starter-security`
-- `springdoc-openapi-starter-webmvc-ui`
-- `mysql-connector-j`
-- `spring-boot-devtools` (hot reload)
+- `spring-boot-starter-web`: Para construção de APIs RESTful.
+- `spring-boot-starter-data-jpa`: Para integração com o banco de dados MySQL.
+- `spring-boot-starter-security`: Para segurança e autenticação (incluindo JWT).
+- `springdoc-openapi-starter-webmvc-ui`: Para geração automática da documentação da API (Swagger UI).
+- `mysql-connector-j`: Driver JDBC para MySQL.
+- `spring-boot-devtools`: Para hot reload durante o desenvolvimento.
+- `io.jsonwebtoken:jjwt-api`, `jjwt-impl`, `jjwt-jackson`: Bibliotecas JWT para geração e validação de tokens.
+- `org.hibernate.validator`: Para validação de dados.
 
 ---
 
@@ -35,61 +38,99 @@ Conforme `pom.xml`:
 
 ```
 src/main/java/com/floodguard/floodguard_server/
-
-├── config         → Configurações de segurança, CORS, beans personalizados etc.
-├── controller     → Controladores REST que recebem e respondem às requisições.
-├── dto            → Data Transfer Objects usados entre as camadas da aplicação.
-├── model          → Entidades JPA representando as tabelas do banco de dados.
-├── repository     → Interfaces que estendem JpaRepository para persistência.
-├── service        → Regras de negócio e lógica central da aplicação.
+├── config         → Configurações de segurança (Spring Security), incluindo a configuração do filtro JWT.
+├── controller     → Controladores REST que recebem as requisições HTTP (ex: `UsuarioController`).
+├── dto            → Data Transfer Objects (ex: `UsuarioDTO`, `UsuarioLoginDTO`, `UsuarioCadastroDTO`).
+├── exception      → Classes de exceção personalizadas (ex: `EmailAlreadyExistsException`).
+├── model          → Entidades JPA que representam tabelas do banco (ex: `Usuario`, `Alerta`, `Bairro`).
+├── repository     → Interfaces `JpaRepository` para persistência.
+├── security       → JWT (`JwtUtil`, `JwtAuthenticationFilter`, `UserDetailsServiceImpl`).
+├── service        → Lógica de negócio da aplicação (ex: `UsuarioService`).
 ```
 
 ---
 
 ## 🔧 Configuração
 
-### 1. Clone o repositório:
+1. Clone o repositório:
+
 ```bash
-git clone https://github.com/floodguard-app/server.git
+git clone https://github.com/seu_usuario/seu_repositorio.git
 cd floodguard-server
 ```
 
-### 2. Configure o banco de dados:
-
-No `application.properties` ou `application.yml`, adicione:
+2. Configure o banco de dados:
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/floodguard_db
-spring.datasource.username=seu_usuario
-spring.datasource.password=sua_senha
+spring.datasource.url=jdbc:mysql://localhost:3306/nome_do_seu_banco
+spring.datasource.username=seu_usuario_do_banco
+spring.datasource.password=senha_do_seu_usuario
 
-spring.jpa.hibernate.ddl-auto=update
+spring.jpa.hibernate.ddl-auto=none
 spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
 ```
 
-### 3. Execute o projeto:
-Com o Maven:
+3. Configure o JWT Secret:
+
+```properties
+jwt.secret=suaChaveSecretaSuperSeguraAqui
+jwt.expiration=86400000
+jwt.refreshExpiration=604800000
+```
+
+⚠️ **IMPORTANTE**: A chave secreta (`jwt.secret`) deve ser longa, aleatória e mantida em segredo. **NÃO use chaves fracas em produção.**
+
+4. Execute o projeto:
+
+Com Maven:
+
 ```bash
 ./mvnw spring-boot:run
 ```
 
-Ou diretamente pela sua IDE (ex: IntelliJ, Eclipse, VS Code).
+Ou pela IDE, execute a classe `FloodguardServerApplication`.
 
 ---
 
-## 🧪 Testes
+## 🔑 Autenticação
 
-- Use `@SpringBootTest` para testes de integração.
-- As dependências de teste já estão configuradas via `spring-boot-starter-test`.
+A API utiliza autenticação baseada em JWT.
+
+### Cadastro de Usuário
+
+```
+POST /api/usuarios/comum/cadastro
+```
+
+### Login
+
+```
+POST /api/usuarios/login
+```
+
+### Acesso a Recursos Protegidos
+
+Inclua o token JWT no cabeçalho da requisição:
+
+```
+Authorization: Bearer <seu_token_jwt>
+```
 
 ---
 
 ## 🔍 Documentação da API
 
-Acesse a documentação gerada automaticamente por Swagger:
-```
-http://localhost:8080/swagger-ui.html
-```
+Acesse via Swagger UI:
+
+[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+
+---
+
+## 🧪 Testes
+
+- Utilize `@SpringBootTest` para testes de integração.
+- As dependências estão incluídas via `spring-boot-starter-test`.
 
 ---
 
@@ -98,7 +139,7 @@ http://localhost:8080/swagger-ui.html
 - Bruno de Almeida Otero  
 - Gabriel Jefferson  
 - Gustavo Dias  
-- Leonardo Correia
+- Leonardo Correia  
 
 ---
 

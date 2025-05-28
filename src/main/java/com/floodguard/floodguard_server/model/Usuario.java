@@ -1,96 +1,87 @@
 package com.floodguard.floodguard_server.model;
 
-import jakarta.persistence.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.stream.Collectors;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "usuario")
-public class Usuario implements UserDetails, Serializable {
-
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Column(name = "nomeUsuario") 
+    private Long id;
+    
+    @Column(nullable = false, length = 100)
     private String nomeUsuario;
 
-    @Column(name = "senha")
+    @Column(nullable = false)
     private String senha;
 
-    @Column(name = "dataCriacao")
+    @Column(nullable = false)
     private LocalDateTime dataCriacao;
 
-    @Column(name = "idBairro")
-    private Integer idBairro;
+    @ManyToOne
+    @JoinColumn(name = "idBairro")
+    private Bairro bairro;
 
-    @Column(unique = true)
+    @Column(nullable = false, length = 254)
     private String email;
 
-    @Column(name = "funcao")
-    private String funcao;
-
-    // Getters e Setters
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
-
-    public String getNomeUsuario() { return nomeUsuario; }
-    public void setNomeUsuario(String nomeUsuario) { this.nomeUsuario = nomeUsuario; }
-
-    public String getSenha() { return senha; }
-    public void setSenha(String senha) { this.senha = senha; }
+    public Usuario() {};
     
-    public LocalDateTime getDataCriacao() { return dataCriacao; }
-    public void setDataCriacao(LocalDateTime dataCriacao) { this.dataCriacao = dataCriacao; }
-
-    public Integer getIdBairro() { return idBairro; }
-    public void setIdBairro(Integer idBairro) { this.idBairro = idBairro; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public String getFuncao() { return funcao; }
-    public void setFuncao(String funcao) { this.funcao = funcao; }
-
-    // Implementação UserDetails
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Retorna as permissões/roles do usuário
-        return Arrays.stream(this.funcao.split(","))
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+    public Usuario(String nomeUsuario, String email, String senha, LocalDateTime dataCriacao) {
+        this.nomeUsuario = nomeUsuario;
+        this.email = email;
+        this.senha = senha;
+        this.dataCriacao = dataCriacao;
     }
 
-    @Override
-    public String getPassword() {
-        return this.senha;
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    @Override
-    public String getUsername() {
-        return this.email; // Usamos email como username para autenticação
+    public String getNomeUsuario() {
+        return nomeUsuario;
+    }
+    public void setNomeUsuario(String nomeUsuario) {
+        this.nomeUsuario = nomeUsuario;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true; // Conta nunca expira
+    public String getSenha() {
+        return senha;
+    }
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true; // Credenciais nunca expiram
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
     }
 
-    @Override
-    public boolean isEnabled() {
-        return true; // Conta sempre ativa
+    public Bairro getBairro() {
+        return bairro;
+    }
+    public void setBairro(Bairro bairro) {
+        this.bairro = bairro;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

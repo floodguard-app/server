@@ -35,7 +35,7 @@ public class Usuario {
     private String email;
 
     public Usuario() {};
-    
+
     public Usuario(String nomeUsuario, String email, String senha, LocalDateTime dataCriacao) {
         this.nomeUsuario = nomeUsuario;
         this.email = email;

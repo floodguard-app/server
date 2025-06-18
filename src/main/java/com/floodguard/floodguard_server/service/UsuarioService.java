@@ -45,13 +45,13 @@ public class UsuarioService {
         }
 
         // Verifica se username já existe
-        if (usuarioRepository.existsByNomeUsuario(dto.getUsername())) {
-            throw new UsernameAlreadyExistsException("Username já está em uso");
-        }
+        // if (usuarioRepository.existsByNomeUsuario(dto.getUsername())) {
+        //     throw new UsernameAlreadyExistsException("Username já está em uso");
+        // }
 
         // 1. Criação do usuário base
         Usuario usuario = new Usuario(
-            dto.getUsername(),
+            "default_user", // dto.getUsername(),
             dto.getEmail(),
             passwordEncoder.encode(dto.getPassword()),
             LocalDateTime.now()

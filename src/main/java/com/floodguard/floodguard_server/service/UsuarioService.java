@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -87,5 +88,17 @@ public class UsuarioService {
             }
         }
         throw new BadCredentialsException("Email ou senha incorretos");
+    }
+
+    public UsuarioDTO atualizarNomeUsuario(String email, String novoNomeUsuario) {
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
+        if(usuarioOptional.isEmpty()) {
+            throw new UsernameNotFoundException("Usuário não encontrado");
+        }
+
+        Usuario usuario = usuarioOptional.get();
+        usuario.setNomeUsuario(novoNomeUsuario);
+        Usuario updatedUser = usuarioRepository.save(usuario);
+        return new UsuarioDTO(updatedUser.getId(), updatedUser.getNomeUsuario(), updatedUser.getEmail());
     }
 }

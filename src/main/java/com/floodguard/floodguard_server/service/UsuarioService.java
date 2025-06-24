@@ -15,9 +15,11 @@ import com.floodguard.floodguard_server.dto.UsuarioDTO;
 import com.floodguard.floodguard_server.dto.UsuarioLoginDTO;
 import com.floodguard.floodguard_server.dto.UsuarioLoginResponseDTO;
 import com.floodguard.floodguard_server.exception.EmailAlreadyExistsException;
-import com.floodguard.floodguard_server.exception.UsernameAlreadyExistsException;
+// import com.floodguard.floodguard_server.exception.UsernameAlreadyExistsException;
+import com.floodguard.floodguard_server.model.Bairro;
 import com.floodguard.floodguard_server.model.Usuario;
 import com.floodguard.floodguard_server.model.UsuarioComum;
+import com.floodguard.floodguard_server.repository.BairroRepository;
 import com.floodguard.floodguard_server.repository.UsuarioComumRepository;
 import com.floodguard.floodguard_server.repository.UsuarioRepository;
 import com.floodguard.floodguard_server.security.JwtUtil;
@@ -31,12 +33,14 @@ public class UsuarioService {
     private final UsuarioComumRepository usuarioComumRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final BairroRepository bairroRepository;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, UsuarioComumRepository usuarioComumRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public UsuarioService(UsuarioRepository usuarioRepository, UsuarioComumRepository usuarioComumRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, BairroRepository bairroRepository) {
         this.usuarioRepository = usuarioRepository;
         this.usuarioComumRepository = usuarioComumRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.bairroRepository = bairroRepository;
     }
 
     public UsuarioComum criarUsuarioComum(UsuarioCadastroDTO dto) {
@@ -100,5 +104,26 @@ public class UsuarioService {
         usuario.setNomeUsuario(novoNomeUsuario);
         Usuario updatedUser = usuarioRepository.save(usuario);
         return new UsuarioDTO(updatedUser.getId(), updatedUser.getNomeUsuario(), updatedUser.getEmail());
+    }
+
+    public UsuarioDTO atualizarBairroUsuario(String email, Long idBairro) {
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
+        if (usuarioOptional.isEmpty()) {
+            throw new UsernameNotFoundException("Usuário não encontrado.");
+        }
+
+        Optional<Bairro> bairroOptional = bairroRepository.findById(idBairro); // Busca o bairro pelo ID
+        if (bairroOptional.isEmpty()) {
+            throw new IllegalArgumentException("Bairro com ID " + idBairro + " não encontrado.");
+        }
+
+        Usuario usuario = usuarioOptional.get();
+        Bairro bairro = bairroOptional.get();
+
+        usuario.setBairro(bairro); // Associa o bairro ao usuário
+        Usuario updatedUser = usuarioRepository.save(usuario); // Salva o usuário atualizado
+
+        // Mapeia o usuário atualizado para DTO, incluindo o novo idBairro
+        return new UsuarioDTO(updatedUser.getId(), updatedUser.getNomeUsuario(), updatedUser.getEmail(), updatedUser.getBairro() != null ? updatedUser.getBairro().getId() : null);
     }
 }

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +21,6 @@ import com.floodguard.floodguard_server.dto.UsuarioLoginDTO;
 import com.floodguard.floodguard_server.dto.UsuarioLoginResponseDTO;
 import com.floodguard.floodguard_server.exception.EmailAlreadyExistsException;
 import com.floodguard.floodguard_server.exception.UsernameAlreadyExistsException;
-import com.floodguard.floodguard_server.model.Usuario;
 import com.floodguard.floodguard_server.model.UsuarioComum;
 import com.floodguard.floodguard_server.service.UsuarioService;
 
@@ -87,6 +85,27 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao atualizar nome de usuario: " + e.getMessage());
+        }
+    }
+
+    @PatchMapping("/bairro")
+    public ResponseEntity<?> atualizarBairroUsuario(@RequestBody Long idBairro) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não autenticado");
+            }
+
+            String email = ((UserDetails) authentication.getPrincipal()).getUsername();
+
+            UsuarioDTO updatedUser = usuarioService.atualizarBairroUsuario(email, idBairro);
+            return ResponseEntity.ok(updatedUser);
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) { // Exceção para quando o Bairro não for encontrado
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao atualizar bairro do usuário: " + e.getMessage());
         }
     }
 

@@ -12,4 +12,7 @@ public interface ComentarioRepository extends JpaRepository<Comentario, Long> {
     List<Comentario> findByAlertaId(Long alertaId);
     List<Comentario> findByComunicadoId(Long comunicadoId);
     List<Comentario> findByStatusRestricao(Boolean statusRestricao);
+
+    // Novo método para listar todos os comentários ordenados pela data de envio (mais recentes primeiro)
+    List<Comentario> findAllByOrderByHorarioEnvioDesc();
 }

@@ -23,6 +23,9 @@ public class Comentario {
 
     private LocalDateTime horarioEnvio;
 
+    @Column(nullable = false, columnDefinition = "TEXT") // Adicionado o campo 'conteudo'
+    private String conteudo;
+
     @ManyToOne
     @JoinColumn(name = "idAlerta")
     private Alerta alerta;
@@ -38,6 +41,18 @@ public class Comentario {
     @ManyToOne
     @JoinColumn(name = "idResposta")
     private Comentario resposta; // autorreferência
+
+    // Construtor padrão (necessário para JPA)
+    public Comentario() {}
+
+    // Novo construtor para facilitar a criação de comentários
+    public Comentario(String conteudo, LocalDateTime horarioEnvio, Usuario usuario) {
+        this.conteudo = conteudo;
+        this.horarioEnvio = horarioEnvio;
+        this.statusRestricao = false; // Padrão 0 (false) como solicitado
+        this.usuario = usuario;
+        // idAlerta, idComunicado, idResposta são nulos por padrão
+    }
 
     public Long getId() {
         return id;
@@ -58,6 +73,13 @@ public class Comentario {
     }
     public void setHorarioEnvio(LocalDateTime horarioEnvio) {
         this.horarioEnvio = horarioEnvio;
+    }
+
+    public String getConteudo() { // Getter para conteudo
+        return conteudo;
+    }
+    public void setConteudo(String conteudo) { // Setter para conteudo
+        this.conteudo = conteudo;
     }
 
     public Alerta getAlerta() {

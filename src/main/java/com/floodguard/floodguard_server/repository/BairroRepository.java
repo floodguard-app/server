@@ -11,4 +11,5 @@ import com.floodguard.floodguard_server.model.Bairro;
 public interface BairroRepository extends JpaRepository<Bairro, Long> {
     List<Bairro> findByCidadeId(Long cidadeId);
     Bairro findByNomeBairro(String nomeBairro);
+    List<Bairro> findAllByOrderByNomeBairroAsc();
 }

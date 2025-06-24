@@ -17,7 +17,7 @@ public class BairroService {
     }
 
     public List<BairroDTO> listarBairros() {
-        List<Bairro> bairros = bairroRepository.findAll();
+        List<Bairro> bairros = bairroRepository.findAllByOrderByNomeBairroAsc();
         return bairros.stream()
             .map(bairro -> new BairroDTO(
                 bairro.getId(),

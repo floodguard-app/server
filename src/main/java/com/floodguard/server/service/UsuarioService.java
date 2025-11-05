@@ -58,6 +58,10 @@ public class UsuarioService {
             .map(usuario -> new UsuarioDTO(usuario.getId(), usuario.getEmail()))
             .collect(Collectors.toList());
     }
+    
+    public Usuario buscarPorEmail(String email) {
+        return usuarioRepository.findByEmail(email).orElse(null);
+    }
 
     public UsuarioLoginResponseDTO autenticarUsuario(UsuarioLoginDTO dto) {
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(dto.getEmail());
@@ -92,6 +96,21 @@ public class UsuarioService {
         Usuario updatedUser = usuarioRepository.save(usuario); // Salva o usuário atualizado
 
         // Mapeia o usuário atualizado para DTO, incluindo o novo idRegiao
+        return new UsuarioDTO(updatedUser.getId(), updatedUser.getEmail(), updatedUser.getRegiao() != null ? updatedUser.getRegiao().getId() : null);
+    }
+
+    public UsuarioDTO atualizarCepUsuario(String email, String cep) {
+        // Verifica se usuário existe
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
+        if (usuarioOptional.isEmpty()) {
+            throw new UsernameNotFoundException("Usuário não encontrado.");
+        }
+
+        Usuario usuario = usuarioOptional.get();
+        usuario.setCep(cep); // Atualiza o CEP do usuário
+        Usuario updatedUser = usuarioRepository.save(usuario); // Salva o usuário atualizado
+
+        // Mapeia o usuário atualizado para DTO
         return new UsuarioDTO(updatedUser.getId(), updatedUser.getEmail(), updatedUser.getRegiao() != null ? updatedUser.getRegiao().getId() : null);
     }
 }

@@ -39,8 +39,11 @@ public class Usuario {
     @JoinColumn(name = "id_regiao", nullable = true)
     private Regiao regiao;
 
+    @Column(name = "cep", length = 8)
+    private String cep;
+
     // Construtores
-    public Usuario() {} // Construtor vazio é necessário para a JPA
+    public Usuario() {}
 
     public Usuario(String email, String senha) {
         this.email = email;
@@ -68,4 +71,10 @@ public class Usuario {
 
     public Regiao getRegiao() { return regiao; }
     public void setRegiao(Regiao regiao) { this.regiao = regiao; }
+
+    public String getCep() { return cep; }
+    public void setCep(String cep) { 
+        System.out.println("Atualizando CEP para: " + cep);
+        this.cep = cep; 
+    }
 }

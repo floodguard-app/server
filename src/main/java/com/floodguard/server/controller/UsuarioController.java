@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.floodguard.server.dto.CepUpdateDTO;
 import com.floodguard.server.dto.RegiaoUpdateDTO;
 import com.floodguard.server.dto.UsuarioCadastroDTO;
 import com.floodguard.server.dto.UsuarioCadastroResponseDTO;
@@ -21,6 +22,8 @@ import com.floodguard.server.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.floodguard.server.dto.CepUpdateDTO;;
 
 @RestController
 @RequestMapping("api/usuarios")
@@ -68,6 +71,19 @@ public class UsuarioController {
         String email = ((UserDetails) authentication.getPrincipal()).getUsername();
 
         UsuarioDTO updatedUser = usuarioService.atualizarRegiaoUsuario(email, dto.getIdRegiao());
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @PatchMapping("/cep")
+    public ResponseEntity<?> atualizarCepUsuario(@RequestBody CepUpdateDTO cepDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não autenticado");
+        }
+
+        String email = ((UserDetails) authentication.getPrincipal()).getUsername();
+
+        UsuarioDTO updatedUser = usuarioService.atualizarCepUsuario(email, cepDTO.getCep());
         return ResponseEntity.ok(updatedUser);
     }
 }

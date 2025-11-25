@@ -4,7 +4,8 @@ public class UsuarioDTO {
     // Atributos
     private Integer id;
     private String email;
-    private Integer idRegiao;
+    private String cep;
+    private String nome;
 
     // Construtores
     public UsuarioDTO() {}
@@ -14,10 +15,11 @@ public class UsuarioDTO {
         this.email = email;
     }
 
-    public UsuarioDTO(Integer id, String email, Integer idRegiao) {
+    public UsuarioDTO(Integer id, String email, String cep, String nome) {
         this.id = id;
         this.email = email;
-        this.idRegiao = idRegiao;
+        this.cep = cep;
+        this.nome = nome;
     }
 
     // Getters and Setters
@@ -27,6 +29,9 @@ public class UsuarioDTO {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public Integer getIdRegiao() { return idRegiao; }
-    public void setIdRegiao(Integer idRegiao) { this.idRegiao = idRegiao; }
+    public String getCep() { return cep; }
+    public void setCep(String cep) { this.cep = cep; }
+
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
 }

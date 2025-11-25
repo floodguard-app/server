@@ -39,8 +39,11 @@ public class Usuario {
     @JoinColumn(name = "id_regiao", nullable = true)
     private Regiao regiao;
 
-    @Column(name = "cep", length = 8)
+    @Column(name = "cep", length = 8, nullable = true)
     private String cep;
+
+    @Column(name = "nome", length = 100, nullable = true)
+    private String nome;
 
     // Construtores
     public Usuario() {}
@@ -48,12 +51,6 @@ public class Usuario {
     public Usuario(String email, String senha) {
         this.email = email;
         this.senha = senha;
-    }
-
-    public Usuario(String email, String senha, Regiao regiao) {
-        this.email = email;
-        this.senha = senha;
-        this.regiao = regiao;
     }
 
     // Getters e Setters
@@ -73,8 +70,8 @@ public class Usuario {
     public void setRegiao(Regiao regiao) { this.regiao = regiao; }
 
     public String getCep() { return cep; }
-    public void setCep(String cep) { 
-        System.out.println("Atualizando CEP para: " + cep);
-        this.cep = cep; 
-    }
+    public void setCep(String cep) { this.cep = cep; }
+
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
 }

@@ -69,7 +69,7 @@ public class UsuarioService {
             Usuario usuario = usuarioOptional.get();
             if (passwordEncoder.matches(dto.getPassword(), usuario.getSenha())) {
                 String token = jwtUtil.generateToken(usuario.getEmail()); // Gera Token
-                UsuarioDTO usuarioDTO = new UsuarioDTO(usuario.getId(), usuario.getEmail());
+                UsuarioDTO usuarioDTO = new UsuarioDTO(usuario.getId(), usuario.getEmail(), usuario.getCep(), usuario.getNome());
                 return new UsuarioLoginResponseDTO(usuarioDTO, token);
             }
         }
@@ -96,7 +96,7 @@ public class UsuarioService {
         Usuario updatedUser = usuarioRepository.save(usuario); // Salva o usuário atualizado
 
         // Mapeia o usuário atualizado para DTO, incluindo o novo idRegiao
-        return new UsuarioDTO(updatedUser.getId(), updatedUser.getEmail(), updatedUser.getRegiao() != null ? updatedUser.getRegiao().getId() : null);
+        return new UsuarioDTO(updatedUser.getId(), updatedUser.getEmail(), updatedUser.getCep(), updatedUser.getNome());
     }
 
     public UsuarioDTO atualizarCepUsuario(String email, String cep) {
@@ -111,6 +111,21 @@ public class UsuarioService {
         Usuario updatedUser = usuarioRepository.save(usuario); // Salva o usuário atualizado
 
         // Mapeia o usuário atualizado para DTO
-        return new UsuarioDTO(updatedUser.getId(), updatedUser.getEmail(), updatedUser.getRegiao() != null ? updatedUser.getRegiao().getId() : null);
+        return new UsuarioDTO(updatedUser.getId(), updatedUser.getEmail(), updatedUser.getCep(), updatedUser.getNome());
+    }
+
+    public UsuarioDTO atualizarNomeUsuario(String email, String nome) {
+        // Verifica se usuário existe
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
+        if (usuarioOptional.isEmpty()) {
+            throw new UsernameNotFoundException("Usuário não encontrado.");
+        }
+
+        Usuario usuario = usuarioOptional.get();
+        usuario.setNome(nome); // Atualiza o CEP do usuário
+        Usuario updatedUser = usuarioRepository.save(usuario); // Salva o usuário atualizado
+
+        // Mapeia o usuário atualizado para DTO
+        return new UsuarioDTO(updatedUser.getId(), updatedUser.getEmail(), updatedUser.getCep(), updatedUser.getNome());
     }
 }

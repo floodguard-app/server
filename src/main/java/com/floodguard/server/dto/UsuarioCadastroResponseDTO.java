@@ -7,7 +7,6 @@ public class UsuarioCadastroResponseDTO {
     private Integer id;
     private LocalDateTime dataCriacao;
     private String email;
-    private Integer idRegiao;
 
     // Construtores
     public UsuarioCadastroResponseDTO() {}
@@ -16,7 +15,6 @@ public class UsuarioCadastroResponseDTO {
         this.id = id;
         this.dataCriacao = dataCriacao;
         this.email = email;
-        this.idRegiao = idRegiao;
     }
 
     // Getters and Setters
@@ -28,7 +26,4 @@ public class UsuarioCadastroResponseDTO {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
-
-    public Integer getIdRegiao() { return idRegiao; }
-    public void setIdRegiao(Integer idRegiao) { this.idRegiao = idRegiao; }
 }

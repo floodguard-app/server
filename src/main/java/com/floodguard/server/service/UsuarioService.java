@@ -19,6 +19,7 @@ import com.floodguard.server.model.Regiao;
 import com.floodguard.server.model.Usuario;
 import com.floodguard.server.repository.RegiaoRepository;
 import com.floodguard.server.repository.UsuarioRepository;
+import com.floodguard.server.repository.UsuarioTokenRepository;
 import com.floodguard.server.security.JwtUtil;
 
 import jakarta.transaction.Transactional;
@@ -30,12 +31,14 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final RegiaoRepository regiaoRepository;
+    private final UsuarioTokenRepository usuarioTokenRepository;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RegiaoRepository regiaoRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RegiaoRepository regiaoRepository, UsuarioTokenRepository usuarioTokenRepository) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.regiaoRepository = regiaoRepository;
+        this.usuarioTokenRepository = usuarioTokenRepository;
     }
 
     public Usuario criarUsuario(UsuarioCadastroDTO dto) {
@@ -127,5 +130,17 @@ public class UsuarioService {
 
         // Mapeia o usuário atualizado para DTO
         return new UsuarioDTO(updatedUser.getId(), updatedUser.getEmail(), updatedUser.getCep(), updatedUser.getNome());
+    }
+
+    public void deletarConta(String email) {
+        // 1. Busca o usuário pelo e-mail
+        Usuario usuario = usuarioRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado."));
+
+        // 2. Deleta primeiro os tokens associados (Filhos)
+        usuarioTokenRepository.deleteByUsuario(usuario);
+
+        // 3. Deleta o usuário (Pai)
+        usuarioRepository.delete(usuario);
     }
 }

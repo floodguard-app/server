@@ -16,6 +16,9 @@ public class UsuarioToken {
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
+    @Column(name = "receber_notificacoes", nullable = false)
+    private Boolean receberNotificacoes = true;
+
     public UsuarioToken() {}
 
     public UsuarioToken(Usuario usuario, String token) {
@@ -23,32 +26,22 @@ public class UsuarioToken {
         this.id = new UsuarioTokenId(usuario.getId(), token);
     }
 
-    public UsuarioTokenId getId() {
-        return id;
-    }
+    public UsuarioTokenId getId() { return id; }
+    public void setId(UsuarioTokenId id) { this.id = id; }
 
-    public void setId(UsuarioTokenId id) {
-        this.id = id;
-    }
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public String getToken() {
-        return id != null ? id.getToken() : null;
-    }
-
+    public String getToken() { return id != null ? id.getToken() : null; }
     public void setToken(String token) {
         if (this.id == null) {
             this.id = new UsuarioTokenId();
         }
         this.id.setToken(token);
     }
+
+    public Boolean getReceberNotificacoes() { return receberNotificacoes; }
+    public void setReceberNotificacoes(Boolean receberNotificacoes) { this.receberNotificacoes = receberNotificacoes; }
 
     @Override
     public boolean equals(Object o) {
